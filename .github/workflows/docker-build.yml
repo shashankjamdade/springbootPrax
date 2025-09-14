@@ -1,9 +1,9 @@
-name: Build, Push, and Deploy Docker Image
+name: Build and Push Docker Image
 
 on:
   push:
     branches:
-      - master
+      - master   # runs when you push to main branch
   pull_request:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Set up JDK for Maven
+      # 2. Set up JDK (for Maven build)
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -33,36 +33,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 5. Build and push Docker image
+      # 5. Build and push image
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: jshashank388/mongox:latest
-
-      # 🚫 Commented Railway Deployment
-      # - name: Install Railway CLI
-      #   run: |
-      #     curl -sSL https://railway.app/install.sh | sh
-      #
-      # - name: Deploy to Railway
-      #   env:
-      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      #     RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-      #   run: |
-      #     railway up --detach --service mongox
-
-      # 6. Deploy Docker container to EC2
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.8.1
-        with:
-          ssh-private-key: ${{ secrets.EC2_KEY }}
-
-      - name: Deploy to EC2
+          
+      # 6. Deploy to Railway using CLI Docker image
+      - name: Install Railway CLI
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
-            docker pull jshashank388/mongox:latest &&
-            docker stop mongox || true &&
-            docker rm mongox || true &&
-            docker run -d --name mongox -p 8080:8080 jshashank388/mongox:latest
-          "
+          curl -sSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: |
+          railway up --detach --service mongox
+
+
+
