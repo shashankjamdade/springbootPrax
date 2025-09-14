@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: mongox
+
+  config:
+    import: "aws-parameterstore:/springboot/aws/"
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb+srv://shashi123:system123@shashitech.oykwn9f.mongodb.net/shashitechltd?retryWrites=true&w=majority}
+      database: ${MONGODB_DB:shashitechltd}
+
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
+
+cloud:
+  aws:
+    region:
+      static: us-east-1   # Change to the actual region of your S3 bucket
+    stack:
+      auto: false
