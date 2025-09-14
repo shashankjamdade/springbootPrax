@@ -15,9 +15,10 @@ server:
 cloud:
   aws:
     s3:
-      access-key: ${access-key}
-      secret-key: ${secret-key}
+      access-key: ${AWS_ACCESS_KEY_ID:dummy}
+      secret-key: ${AWS_SECRET_ACCESS_KEY:dummy}
       region: eu-north-1
+
 
     region:
       static: eu-north-1   # Change to the actual region of your S3 bucket
