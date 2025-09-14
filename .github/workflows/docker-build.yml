@@ -86,8 +86,8 @@ jobs:
             docker rm mongox || true &&
             docker run -d --name mongox -p 8080:8080 \
               -e MONGODB_URI=${{ secrets.MONGODB_URI }} \
-              -e aws.s3.access-key=${{ secrets.AWS_ACCESS_KEY_ID }} \
-              -e aws.s3.secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+              -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+              -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
               jshashank388/mongox:latest
           "
 
