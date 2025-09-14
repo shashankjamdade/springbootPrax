@@ -42,9 +42,8 @@ jobs:
           
       # 6. Deploy to Railway using CLI Docker image
       - name: Deploy to Railway
-        uses: docker://ghcr.io/railwayapp/cli:latest
-        with:
-          args: up --service=mongox -- --image jshashank388/mongox:latest
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          docker run --rm -e RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }} \
+            -v $GITHUB_WORKSPACE:/app -w /app \
+            ghcr.io/railwayapp/cli:latest up --service=mongox -- --image jshashank388/mongox:latest
 
