@@ -39,8 +39,28 @@ jobs:
         with:
           push: true
           tags: jshashank388/mongox:latest
-          
-      # 6. Deploy to Railway using CLI Docker image
+
+      # 6. Configure AWS CLI (needed to push secrets into SSM)
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1   # adjust if your SSM is in a different region
+
+      # 7. Store AWS creds in SSM Parameter Store
+      - name: Store AWS creds in SSM
+        run: |
+          aws ssm put-parameter \
+            --name "/springboot/aws/access-key" \
+            --value "${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            --type String --overwrite
+          aws ssm put-parameter \
+            --name "/springboot/aws/secret-key" \
+            --value "${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            --type String --overwrite
+
+      # 8. Deploy to Railway using CLI Docker image
       - name: Install Railway CLI
         run: |
           curl -sSL https://railway.app/install.sh | sh
@@ -52,7 +72,7 @@ jobs:
         run: |
           railway up --detach --service mongox
 
-      # 5. Deploy on EC2 via SSH
+      # 9. Deploy on EC2 via SSH
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.7.0
         with:
