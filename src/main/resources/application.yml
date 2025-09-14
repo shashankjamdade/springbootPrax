@@ -5,7 +5,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://username:password@cluster.mongodb.net/dbname?retryWrites=true&w=majority
+      uri: mongodb+srv://shashi123:system123@shashitech.oykwn9f.mongodb.net/
       database: shashitechltd
 
 server:
