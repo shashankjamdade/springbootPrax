@@ -40,3 +40,10 @@ jobs:
           push: true
           tags: jshashank388/mongox:latest
           
+      # 6. Deploy to Railway using CLI Docker image
+      - name: Deploy to Railway
+        uses: docker://ghcr.io/railwayapp/cli:latest
+        with:
+          args: railway up --service=mongox --docker-image=jshashank388/mongox:latest
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
