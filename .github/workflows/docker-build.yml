@@ -52,5 +52,20 @@ jobs:
         run: |
           railway up --detach --service mongox
 
+      # 5. Deploy on EC2 via SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+
+      - name: Deploy on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+            docker pull jshashank388/mongox:latest &&
+            docker stop mongox || true &&
+            docker rm mongox || true &&
+            docker run -d --name mongox -p 8080:8080 jshashank388/mongox:latest
+          "
+
 
 
