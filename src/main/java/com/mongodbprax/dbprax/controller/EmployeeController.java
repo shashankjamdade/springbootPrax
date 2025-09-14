@@ -21,7 +21,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository repository;
 
-    @PostMapping
+    @PostMapping("/createEmp")
     public ResponseEntity<Employee> create(@RequestBody Employee emp) {
         return ResponseEntity.ok(service.create(emp));
     }
@@ -29,6 +29,11 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<List<Employee>> getAll() {
         return ResponseEntity.ok(service.getAll());
+    }
+
+    @GetMapping("/helloWorld")
+    public String helloWorld() {
+        return "Greeting from hello world";
     }
 
 //    @GetMapping("/by-dept/{dept}")
