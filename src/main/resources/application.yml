@@ -3,7 +3,7 @@ spring:
     name: mongox
 
   config:
-    import: "aws-parameterstore:/springboot/aws/"
+    import: optional:configtree:/   # disables aws-parameterstore
 
   data:
     mongodb:
