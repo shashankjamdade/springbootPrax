@@ -58,9 +58,10 @@
 		</dependency>
 		<dependency>
 			<groupId>io.awspring.cloud</groupId>
-			<artifactId>spring-cloud-starter-aws-secrets-manager-config</artifactId>
+			<artifactId>spring-cloud-aws-starter-secrets-manager</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+
 
 
 
