@@ -35,6 +35,10 @@ public class EmployeeController {
     public String helloWorld() {
         return "Greeting from hello world";
     }
+    @GetMapping("/healthcheck")
+    public String healthcheck() {
+        return "Greeting from hello world";
+    }
 
 //    @GetMapping("/by-dept/{dept}")
 //    public ResponseEntity<List<Employee>> getByDept(@PathVariable String dept) {
