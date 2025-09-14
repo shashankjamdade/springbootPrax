@@ -2,8 +2,6 @@ spring:
   application:
     name: mongox
 
-  config:
-    import: optional:configtree:/   # disables aws-parameterstore
 
   data:
     mongodb:
@@ -16,7 +14,12 @@ server:
 
 cloud:
   aws:
+    s3:
+      access-key: ${access-key}
+      secret-key: ${secret-key}
+      region: eu-north-1
+
     region:
-      static: us-east-1   # Change to the actual region of your S3 bucket
+      static: eu-north-1   # Change to the actual region of your S3 bucket
     stack:
       auto: false
