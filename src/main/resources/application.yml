@@ -9,7 +9,7 @@ spring:
       database: shashitechltd
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8081}
   address: 0.0.0.0
 
 cloud:
@@ -24,3 +24,22 @@ cloud:
       static: eu-north-1   # Change to the actual region of your S3 bucket
     stack:
       auto: false
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+jwt:
+  secret: "this-is-a-very-strong-random-secret-key-32chars-min!"
+  ttlSeconds: 2592000  # 30 days
