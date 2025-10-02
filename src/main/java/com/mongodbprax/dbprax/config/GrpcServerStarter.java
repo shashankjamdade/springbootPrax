@@ -14,7 +14,8 @@ public class GrpcServerStarter {
 
     @PostConstruct
     public void startGrpcServer() throws Exception {
-        server = ServerBuilder.forPort(9090)
+        server = ServerBuilder
+                .forPort(9090)
                 .addService(new OrderServiceImpl()) // your service impl
                 .build()
                 .start();
