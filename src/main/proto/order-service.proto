@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.mongodbprax.dbprax";
+option java_outer_classname = "OrderServiceProto";
+
+service OrderService {
+  // Unary RPC
+  rpc PlaceOrder(OrderRequest) returns (OrderResponse);
+
+  // Server Streaming
+  rpc TrackOrder(OrderIdRequest) returns (stream OrderStatus);
+
+  // Client Streaming
+  rpc BulkUpload(stream MenuItem) returns (UploadSummary);
+
+  // Bi-directional Streaming
+  rpc LiveChat(stream ChatMessage) returns (stream ChatMessage);
+}
+
+message OrderRequest {
+  string userId = 1;
+  string itemId = 2;
+  int32 quantity = 3;
+}
+
+message OrderResponse {
+  string orderId = 1;
+  string status = 2;
+}
+
+message OrderIdRequest {
+  string orderId = 1;
+}
+
+message OrderStatus {
+  string status = 1;
+}
+
+message MenuItem {
+  string itemId = 1;
+  string name = 2;
+}
+
+message UploadSummary {
+  int32 totalUploaded = 1;
+}
+
+message ChatMessage {
+  string sender = 1;
+  string message = 2;
+}

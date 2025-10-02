@@ -1,3 +1,12 @@
+server:
+  port: ${REST_PORT:8080}   # default 8080, can override with ENV
+  address: 0.0.0.0
+
+grpc:
+  server:
+    port: ${GRPC_PORT:9090} # default 9090, can override with ENV
+
+
 spring:
   application:
     name: mongox
@@ -7,10 +16,6 @@ spring:
     mongodb:
       uri: ${MONGODB_URI:mongodb+srv://shashi123:system123@shashitech.oykwn9f.mongodb.net/}
       database: shashitechltd
-
-server:
-  port: ${PORT:8080}
-  address: 0.0.0.0
 
 cloud:
   aws:
