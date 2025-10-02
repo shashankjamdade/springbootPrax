@@ -40,6 +40,19 @@ jobs:
           push: true
           tags: jshashank388/mongox:latest
 
+
+      # 8. Deploy to Railway using CLI Docker image
+      - name: Install Railway CLI
+        run: |
+          curl -sSL https://railway.app/install.sh | sh
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+        run: |
+          railway up --detach --service mongox
+
       # 6. Deploy on EC2 via SSH
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.7.0
