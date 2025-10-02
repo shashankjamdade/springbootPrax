@@ -5,6 +5,7 @@ server:
 grpc:
   server:
     port: ${GRPC_PORT:9090} # default 9090, can override with ENV
+    address: 0.0.0.0
 
 
 spring:
