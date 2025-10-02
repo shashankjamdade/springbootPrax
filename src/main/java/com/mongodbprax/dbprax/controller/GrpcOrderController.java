@@ -2,15 +2,19 @@ package com.mongodbprax.dbprax.controller;
 
 
 import com.mongodbprax.dbprax.*;
+import com.mongodbprax.dbprax.model.ChatMessageEntity;
 import com.mongodbprax.dbprax.model.reqRes.ChatMessageDto;
 import com.mongodbprax.dbprax.model.reqRes.MenuItemDto;
 import com.mongodbprax.dbprax.model.reqRes.OrderRequestDto;
 import com.mongodbprax.dbprax.model.reqRes.OrderResponseDto;
+import com.mongodbprax.dbprax.repository.ChatMessageRepository;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -23,6 +27,9 @@ public class GrpcOrderController {
 
     private final OrderServiceGrpc.OrderServiceBlockingStub blockingStub;
     private final OrderServiceGrpc.OrderServiceStub asyncStub;
+
+    @Autowired
+    ChatMessageRepository chatMessageRepository;
 
     // 1. Unary RPC
     @PostMapping("/place")
@@ -83,7 +90,7 @@ public class GrpcOrderController {
     }
 
     // 4. Bi-directional Streaming (simplified as echo test)
-    @PostMapping("/chat")
+  /*  @PostMapping("/chat")
     public ResponseEntity<List<String>> liveChat(@RequestBody List<ChatMessageDto> messages) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
         List<String> replies = new ArrayList<>();
@@ -112,5 +119,62 @@ public class GrpcOrderController {
 
         latch.await(5, TimeUnit.SECONDS);
         return ResponseEntity.ok(replies);
+    }*/
+
+    @PostMapping("/chat")
+    public ResponseEntity<List<String>> liveChat(@RequestBody List<ChatMessageDto> messages) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        List<String> replies = new ArrayList<>();
+
+        StreamObserver<ChatMessage> requestObserver = asyncStub.liveChat(new StreamObserver<ChatMessage>() {
+            @Override
+            public void onNext(ChatMessage value) {
+                replies.add(value.getSender() + ": " + value.getMessage());
+
+                // ✅ save server reply to Mongo
+                ChatMessageEntity replyEntity = ChatMessageEntity.builder()
+                        .userId(messages.get(0).getUserId()) // tie reply to same user
+                        .sender(value.getSender())
+                        .message(value.getMessage())
+                        .timestamp(Instant.now())
+                        .build();
+                chatMessageRepository.save(replyEntity);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                latch.countDown();
+            }
+
+            @Override
+            public void onCompleted() {
+                latch.countDown();
+            }
+        });
+
+        // ✅ save user messages & forward to gRPC
+        for (ChatMessageDto dto : messages) {
+            ChatMessageEntity entity = ChatMessageEntity.builder()
+                    .userId(dto.getUserId())
+                    .sender(dto.getSender())
+                    .message(dto.getMessage())
+                    .timestamp(Instant.now())
+                    .build();
+            chatMessageRepository.save(entity);
+
+            requestObserver.onNext(ChatMessage.newBuilder()
+                    .setSender(dto.getSender())
+                    .setMessage(dto.getMessage())
+                    .build());
+        }
+        requestObserver.onCompleted();
+
+        latch.await(5, TimeUnit.SECONDS);
+        return ResponseEntity.ok(replies);
     }
+
+
+
+
+
 }
