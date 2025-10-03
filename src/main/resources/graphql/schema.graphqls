@@ -1,0 +1,27 @@
+type Query {
+    orderById(orderId: ID!): Order
+    allOrders: [Order]
+    chatMessages(conversationId: String!): [ChatMessage]
+}
+
+type Mutation {
+    placeOrder(userId: String!, itemId: String!, quantity: Int!): Order
+    sendMessage(conversationId: String!, sender: String!, message: String!): ChatMessage
+}
+
+type Order {
+    id: ID
+    userId: String
+    itemId: String
+    quantity: Int
+    status: String
+    createdAt: String
+}
+
+type ChatMessage {
+    id: ID
+    conversationId: String
+    sender: String
+    message: String
+    timestamp: String
+}
