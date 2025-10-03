@@ -1,0 +1,11 @@
+syntax = "proto3";
+package playground;
+option java_package = "com.playground.grpc.average";
+option java_multiple_files = true;
+
+message Number { int32 value = 1; }
+message AvgResponse { double avg = 1; }
+
+service AverageService {
+  rpc ComputeAvg(stream Number) returns (AvgResponse);
+}
